@@ -1,0 +1,40 @@
+trigger:
+- main  # Adjust the branch name as needed
+
+pr:
+- '*'
+
+pool:
+  vmImage: 'ubuntu-latest'  # Use the desired VM image
+
+jobs:
+- job: Build
+  displayName: 'Build and Test'
+  steps:
+  - checkout: self
+
+  - task: UseNode@1
+    inputs:
+      version: 16.x  # Use the desired Node.js version
+
+  - script: |
+      echo "Compiling the code..."
+      npm install
+      echo "Compile complete."
+      echo "Running test"
+      npm test
+      echo "Complete tests"
+    displayName: 'Compile and Test'
+
+- job: Deploy
+  displayName: 'Deploy to Vercel'
+  dependsOn: Build
+  steps:
+  - task: UseNode@1
+    inputs:
+      version: 16.x  # Use the desired Node.js version
+
+  - script: |
+      npm install -g vercel
+      vercel --token a87vsh0es --yes --prod
+    displayName: 'Deploy to Vercel'
