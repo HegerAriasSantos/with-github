@@ -1,0 +1,21 @@
+image: node:16
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - echo "Compiling the code..."
+    - npm install         
+    - echo "Compile complete."
+    - echo "Running test"
+    - npm test             
+    - echo "Complete tests"
+
+deploy:
+  stage: deploy
+  script:
+    - npm install -g vercel  
+    - vercel --confirm --prod  
